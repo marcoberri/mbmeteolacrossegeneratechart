@@ -60,7 +60,7 @@ public class Main {
 
 	public SimpleDateFormat sdfDay = new SimpleDateFormat("dd-MM-yyyy");
 	public SimpleDateFormat sdfHourDay = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-	public SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm:ss");
+	public SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm");
 
 	public static void main(String[] args) {
 		if (ConfigurationHelper.getProperties() == null) {
@@ -116,7 +116,7 @@ public class Main {
 		try {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("mBar", url, "/PRESS/", type, "PRESS"));
+			dataset1.addSeries(getTimeSeries("mBar", url, "PRESS/", type, "PRESS"));
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("mBar " + titleChart, "Date", "mBar", dataset1, true, true, false);
 
@@ -147,7 +147,7 @@ public class Main {
 		try {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("mm", url, "/RC/", type, "RC"));
+			dataset1.addSeries(getTimeSeries("mm", url, "RC/", type, "RC"));
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("mm " + titleChart, "Date", "mm", dataset1, true, true, false);
 
@@ -178,10 +178,10 @@ public class Main {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.setDomainIsPointsInTime(true);
-			dataset1.addSeries(getTimeSeries("T°", url, "/T/", type, "T1"));
+			dataset1.addSeries(getTimeSeries("T°", url, "T/", type, "T1"));
 
 			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
-			dataset2.addSeries(getTimeSeries("H%°", url, "/H/", type, "H1"));
+			dataset2.addSeries(getTimeSeries("H%°", url, "H/", type, "H1"));
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("T°/H% " + title, "Date", "T°", dataset1, true, true, false);
 
@@ -261,9 +261,12 @@ public class Main {
 				continue;
 			}
 
-			if (o.get("ts").getAsInt() < 1431216000)
-				continue;
 
+		/*	long limit = 1443996000000l;
+
+			if (o.get("ts").getAsLong() < limit)
+				continue;
+*/
 			System.out.println(o.get("ts").getAsLong());
 
 			m.put(new Date(o.get("ts").getAsLong()), o.get(field).getAsLong());
