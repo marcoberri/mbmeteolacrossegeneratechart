@@ -1,6 +1,7 @@
 package it.marcoberri.mbmeteo.chart;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -58,6 +59,10 @@ public class Main {
 
 	}
 
+	private static int fontSize = 10;
+	private static String fontType = "Helvetica";
+	private static Color color = new Color(136, 177, 249);
+
 	public SimpleDateFormat sdfDay = new SimpleDateFormat("dd-MM-yyyy");
 	public SimpleDateFormat sdfHourDay = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 	public SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm");
@@ -84,20 +89,26 @@ public class Main {
 				final String file = cmd.getOptionValue("f");
 
 				Main o = new Main();
-				o.generateHT(url, Filter.DAY.code, file, "last 24 Hour");
-				o.generateHT(url, Filter.WEEK.code, file, "last 7 Day");
-				o.generateHT(url, Filter.MONTH.code, file, "last 30 Day");
-				o.generateHT(url, Filter.YEAR.code, file, "last Year");
+				o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 800, 300);
+				o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 800, 300);
+				o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 800, 300);
+				o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 800, 300);
 
-				o.generateP(url, Filter.DAY.code, file, "last 24 Hour");
-				o.generateP(url, Filter.WEEK.code, file, "last 7 Day");
-				o.generateP(url, Filter.MONTH.code, file, "last 30 Day");
-				o.generateP(url, Filter.YEAR.code, file, "last Year");
+				o.generateHT(url, Filter.WEEK.code, file, "last 7 Day", 1000, 600);
+				o.generateHT(url, Filter.MONTH.code, file, "last 30 Day", 1000, 600);
+				o.generateHT(url, Filter.YEAR.code, file, "last Year", 1000, 600);
 
-				o.generateR(url, Filter.DAY.code, file, "last 24 Hour");
-				o.generateR(url, Filter.WEEK.code, file, "last 7 Day");
-				o.generateR(url, Filter.MONTH.code, file, "last 30 Day");
-				o.generateR(url, Filter.YEAR.code, file, "last Year");
+				o.generateP(url, Filter.WEEK.code, file, "last 7 Day", 1000, 600);
+				o.generateP(url, Filter.MONTH.code, file, "last 30 Day", 1000, 600);
+				o.generateP(url, Filter.YEAR.code, file, "last Year", 1000, 600);
+
+				o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 1000, 600);
+				o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 1000, 600);
+				o.generateR(url, Filter.YEAR.code, file, "last Year", 1000, 600);
+
+				o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 1000, 600);
+				o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 1000, 600);
+				o.generateWC(url, Filter.YEAR.code, file, "last Year", 1000, 600);
 
 			} else {
 				final HelpFormatter formatter = new HelpFormatter();
@@ -111,55 +122,25 @@ public class Main {
 
 	}
 
-	public void generateP(String url, String type, String folder, String titleChart) {
+	public void generateP(String url, String type, String folder, String titleChart, int width, int height) {
 
 		try {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeries("mBar", url, "PRESS/", type, "PRESS"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("mBar " + titleChart, "Date", "mBar", dataset1, true, true, false);
-
-			
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Pressure mBar " + titleChart, "Date", "mBar", dataset1, true, true, false);
 			final XYPlot plot = chart.getXYPlot();
-			
-			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(),type);
+			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
 			chart.addSubtitle(getLeggendDate());
 
-			int width = 800;
-			int height = 300;
 			File lineChart = new File(folder + "/p" + type + ".jpg");
-			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			plot.setBackgroundPaint(color);
 
-	}
-
-	public void generateR(String url, String type, String folder, String titleChart) {
-
-		try {
-
-			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("mm", url, "RC/", type, "RC"));
-
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("mm " + titleChart, "Date", "mm", dataset1, true, true, false);
-
-			final XYPlot plot = chart.getXYPlot();
-
-			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(),type);
-
-			chart.addSubtitle(getLeggendDate());
-
-			int width = 800;
-			int height = 300;
-			File lineChart = new File(folder + "/rc" + type + ".jpg");
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -172,7 +153,72 @@ public class Main {
 
 	}
 
-	public void generateHT(String url, String type, String folder, String title) {
+	public void generateWC(String url, String type, String folder, String titleChart, int width, int height) {
+
+		try {
+
+			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
+			dataset1.addSeries(getTimeSeries("T°", url, "WC/", type, "WC"));
+
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Wind Chill T° " + titleChart, "Date", "T°", dataset1, true, true, false);
+
+			final XYPlot plot = chart.getXYPlot();
+
+			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
+
+			chart.addSubtitle(getLeggendDate());
+
+			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			plot.setBackgroundPaint(color);
+			File lineChart = new File(folder + "/wc" + type + ".jpg");
+
+			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
+
+		} catch (final ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void generateR(String url, String type, String folder, String titleChart, int width, int height) {
+
+		try {
+
+			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
+			dataset1.addSeries(getTimeSeries("mm", url, "RC/", type, "RC"));
+
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Rain mm " + titleChart, "Date", "mm", dataset1, true, true, false);
+
+			final XYPlot plot = chart.getXYPlot();
+
+			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
+
+			chart.addSubtitle(getLeggendDate());
+
+			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			plot.setBackgroundPaint(color);
+
+			File lineChart = new File(folder + "/rc" + type + ".jpg");
+
+			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
+
+		} catch (final ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void generateHT(String url, String type, String folder, String title, int width, int height) {
 
 		try {
 
@@ -183,7 +229,7 @@ public class Main {
 			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
 			dataset2.addSeries(getTimeSeries("H%°", url, "H/", type, "H1"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("T°/H% " + title, "Date", "T°", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Tempertaure / Humidity " + title, "Date", "Tempertature °", dataset1, true, true, false);
 
 			final XYPlot plot = chart.getXYPlot();
 			final NumberAxis axis2 = new NumberAxis("Humidity %");
@@ -202,20 +248,21 @@ public class Main {
 
 			plot.setRenderer(1, renderer2);
 
-			
-			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(),type);
+			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
 			chart.addSubtitle(getLeggendDate());
 
-			int width = 800;
-			int height = 300;
+			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			plot.setBackgroundPaint(color);
+
 			File lineChart = new File(folder + "/th" + type + ".jpg");
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
-		} catch (ClientProtocolException e) {
+		} catch (final ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -223,7 +270,7 @@ public class Main {
 	}
 
 	private DateAxis setAxis(DateAxis domainAxis, String type) {
-		
+
 		if (type.equalsIgnoreCase(Filter.DAY.code))
 			domainAxis.setDateFormatOverride(sdfHour);
 		else if (type.equalsIgnoreCase(Filter.WEEK.code))
@@ -255,19 +302,18 @@ public class Main {
 		final JsonArray jsonArray = gson.fromJson(s, JsonArray.class);
 
 		final HashMap<Date, Long> m = new HashMap<Date, Long>();
+
 		for (JsonElement e : jsonArray) {
+
 			JsonObject o = e.getAsJsonObject();
 			if (o.get(field) == null || o.get(field).isJsonNull()) {
 				continue;
 			}
 
-
-		/*	long limit = 1443996000000l;
+			long limit = 1431730684000l;
 
 			if (o.get("ts").getAsLong() < limit)
 				continue;
-*/
-			System.out.println(o.get("ts").getAsLong());
 
 			m.put(new Date(o.get("ts").getAsLong()), o.get(field).getAsLong());
 		}
@@ -275,6 +321,7 @@ public class Main {
 		for (Map.Entry<Date, Long> entry : m.entrySet()) {
 			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
 		}
+		System.out.println("tot ele :" + serie1.getItems().size());
 		return serie1;
 	}
 }
