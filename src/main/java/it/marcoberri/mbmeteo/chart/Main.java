@@ -75,8 +75,12 @@ public class Main {
 
 		Options options = new Options();
 		options.addOption("url", true, "url to call for data");
-		options.addOption("f", true, "target file name");
-		options.addOption("h", "help", false, "this help");
+		options.addOption("f", true, "target folder name");
+		
+		options.addOption("d", false, "generation day chart");
+		options.addOption("w", false, "generation week chart");
+		options.addOption("y", false, "generation year chart");
+		options.addOption("m", false, "generation month chart");
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd;
@@ -89,31 +93,50 @@ public class Main {
 				final String file = cmd.getOptionValue("f");
 
 				Main o = new Main();
-				o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 650, 460);
-				o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
-				o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 1200, 300);
-				o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
+				boolean notting = true;
 
-				o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-				o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-				o.generateT(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+				if (cmd.hasOption("d")) {
+					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 650, 460);
+					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
+					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 1200, 300);
+					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
+					notting = false;
+				}
 
-				o.generateP(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-				o.generateP(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-				o.generateP(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+				if (cmd.hasOption("w")) {
+					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					o.generateP(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					notting = false;
+				}
 
-				o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-				o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-				o.generateH(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+				if (cmd.hasOption("m")) {
 
-				o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-				o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-				o.generateR(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					o.generateP(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					notting = false;
+				}
 
-				o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-				o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-				o.generateWC(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+				if (cmd.hasOption("y")) {
 
+					o.generateT(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateP(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateH(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateR(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateWC(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					notting = false;
+				}
+				
+				
+				if(notting){
+					System.out.println("Notting to do!!!");
+				}
+				
 			} else {
 				final HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("java -jar <jar_name>" + "\nVersion:" + ConfigurationHelper.getProperties().getProperty("app.version") + "\nbuild: " + ConfigurationHelper.getProperties().getProperty("app.build"), options);
@@ -144,6 +167,7 @@ public class Main {
 			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
 			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
 			plot.setBackgroundPaint(color);
+			chart.removeLegend();
 
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
@@ -176,6 +200,8 @@ public class Main {
 			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
 			plot.setBackgroundPaint(color);
 
+			chart.removeLegend();
+			
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -207,6 +233,7 @@ public class Main {
 			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
 			plot.setBackgroundPaint(color);
 
+			chart.removeLegend();
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -239,6 +266,7 @@ public class Main {
 			plot.setBackgroundPaint(color);
 			File lineChart = new File(folder + "/wc" + type + ".jpg");
 
+			chart.removeLegend();
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -256,7 +284,7 @@ public class Main {
 		try {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("mm", url, "RC/", type, "RC",-1));
+			dataset1.addSeries(getTimeSeries("mm", url, "RC/", type, "RC", -1));
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Rain mm " + titleChart, "Date", "mm", dataset1, true, true, false);
 
@@ -272,6 +300,7 @@ public class Main {
 
 			File lineChart = new File(folder + "/rc" + type + ".jpg");
 
+			chart.removeLegend();
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -323,6 +352,8 @@ public class Main {
 			plot.setBackgroundPaint(color);
 
 			File lineChart = new File(folder + "/th" + type + ".jpg");
+			chart.removeLegend();
+			
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -385,8 +416,7 @@ public class Main {
 			if (o.get("ts").getAsLong() < limit)
 				continue;
 
-			
-			m.put(new Date(o.get("ts").getAsLong()), o.get(field).getAsLong() + (gap != -1000 ? gap :0));
+			m.put(new Date(o.get("ts").getAsLong()), o.get(field).getAsLong() + (gap != -1000 ? gap : 0));
 		}
 
 		for (Map.Entry<Date, Long> entry : m.entrySet()) {

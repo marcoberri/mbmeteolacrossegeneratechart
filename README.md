@@ -7,3 +7,18 @@ Java batch per generare i grafici per la visualizzazione sul sito [meteo.marcobe
 
 * maven --> mvn clean assembly:assembly
 * src/main/resources/configuration.properties
+
+
+#Run
+
+* java -jar <jar_name> -url http://meteo.marcoberri.it/ -f /<app-path>/mbmeteolacrosse/app/public/charts -d -m -y -w
+
+#Options
+
+* -url : indirizzo delle api
+* -f : folder path
+* -d  : day graph generation
+* -w  : week graph generation
+* -y  : year graph generation
+* -m  : month graph generation
+
