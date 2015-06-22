@@ -2,12 +2,15 @@ package it.marcoberri.mbmeteo.chart;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -21,10 +24,12 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.SpiderWebPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -76,7 +81,7 @@ public class Main {
 		Options options = new Options();
 		options.addOption("url", true, "url to call for data");
 		options.addOption("f", true, "target folder name");
-		
+
 		options.addOption("d", false, "generation day chart");
 		options.addOption("w", false, "generation week chart");
 		options.addOption("y", false, "generation year chart");
@@ -95,11 +100,14 @@ public class Main {
 				Main o = new Main();
 				boolean notting = true;
 
+				
+
 				if (cmd.hasOption("d")) {
 					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 650, 460);
 					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
 					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 1200, 300);
 					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
+					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 650, 460);
 					notting = false;
 				}
 
@@ -109,6 +117,7 @@ public class Main {
 					o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
 					o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
 					o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					o.generateWDWS(url, Filter.WEEK.code, file, "last 7 Hour", 400, 400);
 					notting = false;
 				}
 
@@ -119,6 +128,7 @@ public class Main {
 					o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
 					o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
 					o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					o.generateWDWS(url, Filter.MONTH.code, file, "last 30 Hour", 400, 400);
 					notting = false;
 				}
 
@@ -129,14 +139,14 @@ public class Main {
 					o.generateH(url, Filter.YEAR.code, file, "last Year", 1000, 400);
 					o.generateR(url, Filter.YEAR.code, file, "last Year", 1000, 400);
 					o.generateWC(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateWDWS(url, Filter.MONTH.code, file, "last Year", 400, 400);
 					notting = false;
 				}
-				
-				
-				if(notting){
+
+				if (notting) {
 					System.out.println("Notting to do!!!");
 				}
-				
+
 			} else {
 				final HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("java -jar <jar_name>" + "\nVersion:" + ConfigurationHelper.getProperties().getProperty("app.version") + "\nbuild: " + ConfigurationHelper.getProperties().getProperty("app.build"), options);
@@ -145,6 +155,81 @@ public class Main {
 		} catch (final ParseException e) {
 			e.printStackTrace();
 			System.exit(1);
+		}
+
+	}
+
+	public void generateWDWS(String url, String type, String folder, String titleChart, int width, int height) {
+
+		try {
+			String s = HttpHelper.getData(url + "/WDWS/" + type);
+
+			Gson gson = new Gson();
+			final JsonArray jsonArray = gson.fromJson(s, JsonArray.class);
+
+			Map<Double, Double> distinctValue = new TreeMap<Double, Double>();
+
+			for (JsonElement e : jsonArray) {
+				JsonObject o = e.getAsJsonObject();
+				if (o.get("WD") == null || o.get("WD").isJsonNull()) {
+					continue;
+				}
+				long limit = 1431730684000l;
+
+				if (o.get("ts").getAsLong() < limit)
+					continue;
+
+				Double d = new Double(o.get("WD").getAsLong() * 22.5);
+				Double n = new Double(o.get("WS").getAsDouble());
+
+				if (distinctValue.containsKey(d)) {
+					Double temp = distinctValue.get(d);
+					temp += n;
+					distinctValue.put(d, temp);
+				} else {
+					distinctValue.put(d, n);
+				}
+
+			}
+
+			DefaultCategoryDataset categorydataset = new DefaultCategoryDataset();
+
+			for (Map.Entry<Double, Double> entry : distinctValue.entrySet()) {
+
+				String lbl = "°" + entry.getKey();
+				if (entry.getKey() == 0)
+					lbl += "\n North";
+				else if (entry.getKey() == 180)
+					lbl += "\n South";
+				else if (entry.getKey() == 90)
+					lbl += "\n West";
+				else if (entry.getKey() == 270)
+					lbl += "\n Ovest";
+
+				categorydataset.addValue(entry.getValue(), entry.getKey(), lbl);
+
+			}
+
+			Color bckColor1 = Color.decode("#4282CE"); // Light blue
+			Color bckColor2 = Color.decode("#9BC1FF"); // Dark blue
+			Color axisColor = Color.decode("#DD0010"); // Red
+
+			SpiderWebPlot plot = new SpiderWebPlot(categorydataset);
+			Paint p = new GradientPaint(0, 0, bckColor1, 0, 0, bckColor2);
+
+			plot.setSeriesPaint(p);
+			plot.setAxisLinePaint(axisColor);
+
+			JFreeChart chart = new JFreeChart("Wind Direction/Speed", TextTitle.DEFAULT_FONT, plot, false);
+			chart.addSubtitle(getLeggendDate());
+			File lineChart = new File(folder + "/wdws" + type + ".jpg");
+
+			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+
 		}
 
 	}
@@ -201,7 +286,7 @@ public class Main {
 			plot.setBackgroundPaint(color);
 
 			chart.removeLegend();
-			
+
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
@@ -353,7 +438,7 @@ public class Main {
 
 			File lineChart = new File(folder + "/th" + type + ".jpg");
 			chart.removeLegend();
-			
+
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
 		} catch (final ClientProtocolException e) {
