@@ -3,9 +3,14 @@
 Java batch per generare i grafici per la visualizzazione sul sito [meteo.marcoberri.it](http://meteo.marcoberri.it)
 
 
-#Configuration
+
+#Maven Assembly Jar
 
 * maven --> mvn clean assembly:assembly
+
+#Configuration
+
+
 * src/main/resources/configuration.properties
 
 
