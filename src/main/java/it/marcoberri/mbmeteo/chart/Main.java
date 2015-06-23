@@ -1,9 +1,11 @@
 package it.marcoberri.mbmeteo.chart;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -100,14 +102,12 @@ public class Main {
 				Main o = new Main();
 				boolean notting = true;
 
-				
-
 				if (cmd.hasOption("d")) {
-					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 650, 460);
+					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 640, 460);
 					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
 					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 1200, 300);
 					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
-					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 650, 460);
+					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 650, 650);
 					notting = false;
 				}
 
@@ -198,31 +198,43 @@ public class Main {
 
 				String lbl = "°" + entry.getKey();
 				if (entry.getKey() == 0)
-					lbl += "\n North";
+					lbl = "North";
 				else if (entry.getKey() == 180)
-					lbl += "\n South";
+					lbl = "South";
 				else if (entry.getKey() == 90)
-					lbl += "\n West";
+					lbl = "West";
 				else if (entry.getKey() == 270)
-					lbl += "\n Ovest";
+					lbl = "Ovest";
+				else if (entry.getKey() == 315)
+					lbl = "NO";
+				else if (entry.getKey() == 225)
+					lbl = "SO";
+				else if (entry.getKey() == 135)
+					lbl = "SW";
+				else if (entry.getKey() == 45)
+					lbl = "NW";
 
 				categorydataset.addValue(entry.getValue(), entry.getKey(), lbl);
 
 			}
 
-			Color bckColor1 = Color.decode("#4282CE"); // Light blue
-			Color bckColor2 = Color.decode("#9BC1FF"); // Dark blue
-			Color axisColor = Color.decode("#DD0010"); // Red
+			final Color bckColor1 = Color.decode("#4282CE"); // Light blue
+			final Color bckColor2 = Color.decode("#9BC1FF"); // Dark blue
 
-			SpiderWebPlot plot = new SpiderWebPlot(categorydataset);
-			Paint p = new GradientPaint(0, 0, bckColor1, 0, 0, bckColor2);
+			final Color axisColor = Color.decode("#DD0010"); // Red
 
-			plot.setSeriesPaint(p);
+			final SpiderWebPlot plot = new SpiderWebPlot(categorydataset);
+			final Paint p = new GradientPaint(0, 0, bckColor1, 0, 0, bckColor2);
+
+			plot.setSeriesPaint(0, p);
+			plot.setSeriesOutlineStroke(new BasicStroke(5));
 			plot.setAxisLinePaint(axisColor);
+			plot.setLabelPaint(new GradientPaint(1.0f, 2.0f, Color.red, 3.0f, 4.0f, Color.blue));
+			
 
-			JFreeChart chart = new JFreeChart("Wind Direction/Speed", TextTitle.DEFAULT_FONT, plot, false);
+			final JFreeChart chart = new JFreeChart("Wind Direction/Speed", TextTitle.DEFAULT_FONT, plot, false);
 			chart.addSubtitle(getLeggendDate());
-			File lineChart = new File(folder + "/wdws" + type + ".jpg");
+			final File lineChart = new File(folder + "/wdws" + type + ".jpg");
 
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
 
