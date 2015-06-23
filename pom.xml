@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.marcoberri</groupId>
 	<artifactId>mbmeteolacrosse.generatechart</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>mbmetelacrossegeneratechart</name>
 	<description>Generate Chart for app MbMeteoLacrosse</description>
 
@@ -108,4 +107,5 @@
 
 	</dependencies>
 
+	<version>1.0</version>
 </project>

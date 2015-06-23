@@ -15,20 +15,12 @@ public class ConfigurationHelper {
 
 		Properties p = new Properties();
 		try {
-			p.load(ConfigurationHelper.class.getResourceAsStream("/configurations.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Properties p2 = new Properties();
-		try {
-			p2.load(ConfigurationHelper.class.getResourceAsStream("/version.properties"));
+			p.load(ConfigurationHelper.class.getResourceAsStream("/version.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		prop.putAll(p);
-		prop.putAll(p2);
-
 		return prop;
 	}
 

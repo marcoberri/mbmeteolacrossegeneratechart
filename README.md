@@ -8,11 +8,6 @@ Java batch per generare i grafici per la visualizzazione sul sito [meteo.marcobe
 
 * maven --> mvn clean assembly:assembly
 
-#Configuration
-
-
-* src/main/resources/configuration.properties
-
 
 #Run
 
