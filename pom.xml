@@ -63,11 +63,11 @@
 
 	<dependencies>
 
-<dependency>
-	<groupId>com.google.code.gson</groupId>
-	<artifactId>gson</artifactId>
-	<version>${gson-version}</version>
-</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson-version}</version>
+		</dependency>
 
 
 
@@ -76,7 +76,7 @@
 			<artifactId>jfreechart</artifactId>
 			<version>${jfreechart-version}</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>commons-cli</groupId>

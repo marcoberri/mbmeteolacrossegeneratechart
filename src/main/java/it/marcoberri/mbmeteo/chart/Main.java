@@ -381,7 +381,7 @@ public class Main {
 		try {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("mm", url, "RC/", type, "RC", -1));
+			dataset1.addSeries(getTimeSeriesRain("mm", url, "RC/", type, "RC", -1));
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Rain mm " + titleChart, "Date", "mm", dataset1, true, true, false);
 
@@ -522,4 +522,55 @@ public class Main {
 		System.out.println("tot ele :" + serie1.getItems().size());
 		return serie1;
 	}
+
+
+	public TimeSeries getTimeSeriesRain(String tseries, String url, String baseUrl, String type, String field, int gap) throws ClientProtocolException, IOException {
+
+		final TimeSeries serie1 = new TimeSeries(tseries);
+
+		System.out.println("call " + url + baseUrl + type);
+
+		String s = HttpHelper.getData(url + baseUrl + type);
+		Gson gson = new Gson();
+		final JsonArray jsonArray = gson.fromJson(s, JsonArray.class);
+
+		final HashMap<Date, Long> m = new HashMap<Date, Long>();
+
+		Long first = new Long(0);
+		for (JsonElement e : jsonArray) {
+
+			JsonObject o = e.getAsJsonObject();
+			if (o.get(field) == null || o.get(field).isJsonNull()) {
+				continue;
+			}
+
+			long limit = 1431730684000l;
+
+			if (o.get("ts").getAsLong() < limit)
+				continue;
+
+			Long l = o.get(field).getAsLong() + (gap != -1000 ? gap : 0);
+
+			if(l == 0)
+				continue;
+			
+			if(first == 0 && l > 0 ){
+				first = new Long(l);
+				l = new Long(0);
+			}
+			
+			if(first > 0 && first <= l)
+				l = l - first;
+
+			
+			m.put(new Date(o.get("ts").getAsLong()), l);
+		}
+
+		for (Map.Entry<Date, Long> entry : m.entrySet()) {
+			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
+		}
+		System.out.println("tot ele :" + serie1.getItems().size());
+		return serie1;
+	}
+
 }
