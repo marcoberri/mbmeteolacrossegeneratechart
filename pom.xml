@@ -21,8 +21,6 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 		<mongo-driver.version>3.0.1</mongo-driver.version>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-
-
 	</properties>
 
 

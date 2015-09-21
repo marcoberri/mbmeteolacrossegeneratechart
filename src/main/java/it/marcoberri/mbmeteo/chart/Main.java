@@ -536,7 +536,6 @@ public class Main {
 
 		final HashMap<Date, Long> m = new HashMap<Date, Long>();
 
-		Long first = new Long(0);
 		for (JsonElement e : jsonArray) {
 
 			JsonObject o = e.getAsJsonObject();
@@ -549,19 +548,10 @@ public class Main {
 			if (o.get("ts").getAsLong() < limit)
 				continue;
 
-			Long l = o.get(field).getAsLong() + (gap != -1000 ? gap : 0);
-
-			if(l == 0)
-				continue;
+			Long l = o.get(field).getAsLong();
 			
-			if(first == 0 && l > 0 ){
-				first = new Long(l);
+			if(l < (long)0)
 				l = new Long(0);
-			}
-			
-			if(first > 0 && first <= l)
-				l = l - first;
-
 			
 			m.put(new Date(o.get("ts").getAsLong()), l);
 		}
