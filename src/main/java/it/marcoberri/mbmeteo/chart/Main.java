@@ -103,42 +103,42 @@ public class Main {
 				boolean notting = true;
 
 				if (cmd.hasOption("d")) {
-					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 640, 460);
-					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
-					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 1200, 300);
-					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 500);
-					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 650, 650);
+					o.generateT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					notting = false;
 				}
 
 				if (cmd.hasOption("w")) {
-					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-					o.generateP(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-					o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-					o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
-					o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 1000, 400);
+					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					o.generateP(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
 					o.generateWDWS(url, Filter.WEEK.code, file, "last 7 Hour", 400, 400);
 					notting = false;
 				}
 
 				if (cmd.hasOption("m")) {
-
-					o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-					o.generateP(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-					o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-					o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
-					o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 1000, 400);
+					o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
+					o.generateP(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
+					o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
+					o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
+					o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
 					o.generateWDWS(url, Filter.MONTH.code, file, "last 30 Hour", 400, 400);
 					notting = false;
 				}
 
 				if (cmd.hasOption("y")) {
-
-					o.generateT(url, Filter.YEAR.code, file, "last Year", 1000, 400);
-					o.generateP(url, Filter.YEAR.code, file, "last Year", 1000, 400);
-					o.generateH(url, Filter.YEAR.code, file, "last Year", 1000, 400);
-					o.generateR(url, Filter.YEAR.code, file, "last Year", 1000, 400);
-					o.generateWC(url, Filter.YEAR.code, file, "last Year", 1000, 400);
+					o.generateT(url, Filter.YEAR.code, file, "last Year", 800, 400);
+					o.generateP(url, Filter.YEAR.code, file, "last Year", 800, 400);
+					o.generateH(url, Filter.YEAR.code, file, "last Year", 800, 400);
+					o.generateR(url, Filter.YEAR.code, file, "last Year", 800, 400);
+					o.generateWC(url, Filter.YEAR.code, file, "last Year", 800, 400);
 					o.generateWDWS(url, Filter.MONTH.code, file, "last Year", 400, 400);
 					notting = false;
 				}
@@ -410,6 +410,7 @@ public class Main {
 
 	}
 
+	
 	public void generateHT(String url, String type, String folder, String title, int width, int height) {
 
 		try {
