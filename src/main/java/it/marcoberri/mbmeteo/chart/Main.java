@@ -5,9 +5,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
-import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -104,12 +104,14 @@ public class Main {
 
 				if (cmd.hasOption("d")) {
 					o.generateT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+
 					o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+
 					notting = false;
 				}
 
@@ -149,7 +151,9 @@ public class Main {
 
 			} else {
 				final HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("java -jar <jar_name>" + "\nVersion:" + ConfigurationHelper.getProperties().getProperty("app.version") + "\nbuild: " + ConfigurationHelper.getProperties().getProperty("app.build"), options);
+				formatter.printHelp("java -jar <jar_name>" + "\nVersion:"
+						+ ConfigurationHelper.getProperties().getProperty("app.version") + "\nbuild: "
+						+ ConfigurationHelper.getProperties().getProperty("app.build"), options);
 			}
 
 		} catch (final ParseException e) {
@@ -230,7 +234,6 @@ public class Main {
 			plot.setSeriesOutlineStroke(new BasicStroke(5));
 			plot.setAxisLinePaint(axisColor);
 			plot.setLabelPaint(new GradientPaint(1.0f, 2.0f, Color.red, 3.0f, 4.0f, Color.blue));
-			
 
 			final JFreeChart chart = new JFreeChart("Wind Direction/Speed", TextTitle.DEFAULT_FONT, plot, false);
 			chart.addSubtitle(getLeggendDate());
@@ -253,13 +256,42 @@ public class Main {
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeries("°C", url, "T/", type, "T1"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Temperature °C " + titleChart, "Date", "°C", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Temperature °C " + titleChart, "Date", "°C",
+					dataset1, true, true, false);
+
 			final XYPlot plot = chart.getXYPlot();
+
 			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
+			/*final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
+			dataset2.addSeries(getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MinHour"));
+
+			plot.setDataset(1, dataset2);
+*/
+			/*
+			 * final NumberAxis axis2 = new NumberAxis();
+			 * axis2.setAutoRangeIncludesZero(false); plot.setRangeAxis(1,
+			 * axis2); plot.setDataset(1, dataset2);
+			 * plot.mapDatasetToRangeAxis(1, 1); final XYItemRenderer renderer =
+			 * plot.getRenderer(); if (renderer instanceof
+			 * StandardXYItemRenderer) { final StandardXYItemRenderer rr =
+			 * (StandardXYItemRenderer) renderer; rr.setShapesFilled(true); }
+			 * 
+			 */
+
+			final StandardXYItemRenderer renderer1 = new StandardXYItemRenderer();
+			renderer1.setSeriesPaint(0, Color.blue);
+			plot.setRenderer(1, renderer1);
+
+		/*	final StandardXYItemRenderer renderer2 = new StandardXYItemRenderer();
+			renderer2.setSeriesPaint(0, Color.red);
+			plot.setRenderer(2, renderer2);
+*/
 			chart.addSubtitle(getLeggendDate());
 
 			File lineChart = new File(folder + "/t" + type + ".jpg");
+
+			// plot.setDataset(1, dataset2);
 
 			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
 			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
@@ -285,7 +317,8 @@ public class Main {
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeries("mBar", url, "PRESS/", type, "PRESS"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Pressure mBar " + titleChart, "Date", "mBar", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Pressure mBar " + titleChart, "Date", "mBar",
+					dataset1, true, true, false);
 			final XYPlot plot = chart.getXYPlot();
 			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
@@ -318,7 +351,8 @@ public class Main {
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeries("%", url, "H/", type, "H1"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Humidity % " + titleChart, "Date", "%", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Humidity % " + titleChart, "Date", "%",
+					dataset1, true, true, false);
 			final XYPlot plot = chart.getXYPlot();
 			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
@@ -350,7 +384,8 @@ public class Main {
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeries("T°", url, "WC/", type, "WC"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Wind Chill T° " + titleChart, "Date", "T°", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Wind Chill T° " + titleChart, "Date", "T°",
+					dataset1, true, true, false);
 
 			final XYPlot plot = chart.getXYPlot();
 
@@ -383,7 +418,8 @@ public class Main {
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeriesRain("mm", url, "RC/", type, "RC", -1));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Rain mm " + titleChart, "Date", "mm", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Rain mm " + titleChart, "Date", "mm", dataset1,
+					true, true, false);
 
 			final XYPlot plot = chart.getXYPlot();
 
@@ -410,7 +446,6 @@ public class Main {
 
 	}
 
-	
 	public void generateHT(String url, String type, String folder, String title, int width, int height) {
 
 		try {
@@ -422,7 +457,8 @@ public class Main {
 			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
 			dataset2.addSeries(getTimeSeries("H%°", url, "H/", type, "H1"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Tempertaure / Humidity " + title, "Date", "Tempertature °C", dataset1, true, true, false);
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Tempertaure / Humidity " + title, "Date",
+					"Tempertature °C", dataset1, true, true, false);
 
 			final XYPlot plot = chart.getXYPlot();
 			final NumberAxis axis2 = new NumberAxis("Humidity %");
@@ -486,11 +522,55 @@ public class Main {
 
 	}
 
-	public TimeSeries getTimeSeries(String tseries, String url, String baseUrl, String type, String field) throws ClientProtocolException, IOException {
+	public TimeSeries getTimeSeries(String tseries, String url, String baseUrl, String type, String field)
+			throws ClientProtocolException, IOException {
 		return getTimeSeries(tseries, url, baseUrl, type, field, -1000);
 	}
 
-	public TimeSeries getTimeSeries(String tseries, String url, String baseUrl, String type, String field, int gap) throws ClientProtocolException, IOException {
+	public TimeSeries getTimeSeriesMaxMin(String tseries, String url, String baseUrl, String type, String field)
+			throws ClientProtocolException, IOException {
+
+		final TimeSeries serie1 = new TimeSeries(tseries);
+		System.out.println("call " + url + baseUrl + type);
+		String s = HttpHelper.getData(url + baseUrl + type);
+
+		Gson gson = new Gson();
+		final JsonArray jsonArray = gson.fromJson(s, JsonArray.class);
+
+		final HashMap<Date, Long> m = new HashMap<Date, Long>();
+
+		for (JsonElement e : jsonArray) {
+
+			JsonObject o = e.getAsJsonObject();
+			if (o.get(field) == null || o.get(field).isJsonNull()) {
+				continue;
+			}
+
+			String tmpDate = o.get("ts").toString().replace("\"", "");
+
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd:HH");
+			Date date;
+			try {
+				date = format.parse(tmpDate);
+			} catch (java.text.ParseException e1) {
+				System.out.println("error parsing:" + tmpDate + "-->" + e1.toString());
+				continue;
+			}
+			m.put(date, o.get(field).getAsLong());
+		}
+
+		for (Map.Entry<Date, Long> entry : m.entrySet()) {
+			System.out.println("key:" + entry.getKey() + " -->" + entry.getValue());
+			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
+
+		}
+		System.out.println("tot ele :" + serie1.getItems().size());
+		return serie1;
+
+	}
+
+	public TimeSeries getTimeSeries(String tseries, String url, String baseUrl, String type, String field, int gap)
+			throws ClientProtocolException, IOException {
 
 		final TimeSeries serie1 = new TimeSeries(tseries);
 
@@ -500,7 +580,7 @@ public class Main {
 		Gson gson = new Gson();
 		final JsonArray jsonArray = gson.fromJson(s, JsonArray.class);
 
-		final HashMap<Date, Long> m = new HashMap<Date, Long>();
+		final HashMap<Date, Float> m = new HashMap<Date, Float>();
 
 		for (JsonElement e : jsonArray) {
 
@@ -514,18 +594,18 @@ public class Main {
 			if (o.get("ts").getAsLong() < limit)
 				continue;
 
-			m.put(new Date(o.get("ts").getAsLong()), o.get(field).getAsLong() + (gap != -1000 ? gap : 0));
+			m.put(new Date(o.get("ts").getAsLong()), o.get(field).getAsFloat() + (gap != -1000 ? gap : 0));
 		}
 
-		for (Map.Entry<Date, Long> entry : m.entrySet()) {
+		for (Map.Entry<Date, Float> entry : m.entrySet()) {
 			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
 		}
-		System.out.println("tot ele :" + serie1.getItems().size());
+		
 		return serie1;
 	}
 
-
-	public TimeSeries getTimeSeriesRain(String tseries, String url, String baseUrl, String type, String field, int gap) throws ClientProtocolException, IOException {
+	public TimeSeries getTimeSeriesRain(String tseries, String url, String baseUrl, String type, String field, int gap)
+			throws ClientProtocolException, IOException {
 
 		final TimeSeries serie1 = new TimeSeries(tseries);
 
@@ -550,10 +630,10 @@ public class Main {
 				continue;
 
 			Long l = o.get(field).getAsLong();
-			
-			if(l < (long)0)
+
+			if (l < (long) 0)
 				l = new Long(0);
-			
+
 			m.put(new Date(o.get("ts").getAsLong()), l);
 		}
 
