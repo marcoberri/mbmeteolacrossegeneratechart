@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.apache.commons.cli.CommandLine;
@@ -52,7 +53,7 @@ import com.google.gson.JsonObject;
 public class Main {
 
 	public enum Filter {
-		WEEK("7"), DAY("24"), YEAR("365"), MONTH("30");
+		WEEK("7"), DAY("24"), YEAR("365"), MONTH("30"), MaxMinDAY("MaxMin/24");
 
 		private final String code;
 
@@ -104,46 +105,47 @@ public class Main {
 
 				if (cmd.hasOption("d")) {
 					o.generateT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-
-					o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+				/*	o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
 					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-
+*/
 					notting = false;
 				}
 
-				if (cmd.hasOption("w")) {
-					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
-					o.generateP(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
-					o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
-					o.generateR(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
-					o.generateWC(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
-					o.generateWDWS(url, Filter.WEEK.code, file, "last 7 Hour", 400, 400);
-					notting = false;
-				}
-
-				if (cmd.hasOption("m")) {
-					o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
-					o.generateP(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
-					o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
-					o.generateR(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
-					o.generateWC(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
-					o.generateWDWS(url, Filter.MONTH.code, file, "last 30 Hour", 400, 400);
-					notting = false;
-				}
-
-				if (cmd.hasOption("y")) {
-					o.generateT(url, Filter.YEAR.code, file, "last Year", 800, 400);
-					o.generateP(url, Filter.YEAR.code, file, "last Year", 800, 400);
-					o.generateH(url, Filter.YEAR.code, file, "last Year", 800, 400);
-					o.generateR(url, Filter.YEAR.code, file, "last Year", 800, 400);
-					o.generateWC(url, Filter.YEAR.code, file, "last Year", 800, 400);
-					o.generateWDWS(url, Filter.MONTH.code, file, "last Year", 400, 400);
-					notting = false;
-				}
+				/*
+				 * if (cmd.hasOption("w")) { o.generateT(url, Filter.WEEK.code,
+				 * file, "last 7 Day", 800, 400); o.generateP(url,
+				 * Filter.WEEK.code, file, "last 7 Day", 800, 400);
+				 * o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 800,
+				 * 400); o.generateR(url, Filter.WEEK.code, file, "last 7 Day",
+				 * 800, 400); o.generateWC(url, Filter.WEEK.code, file,
+				 * "last 7 Day", 800, 400); o.generateWDWS(url,
+				 * Filter.WEEK.code, file, "last 7 Hour", 400, 400); notting =
+				 * false; }
+				 * 
+				 * if (cmd.hasOption("m")) { o.generateT(url, Filter.MONTH.code,
+				 * file, "last 30 Day", 800, 400); o.generateP(url,
+				 * Filter.MONTH.code, file, "last 30 Day", 800, 400);
+				 * o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 800,
+				 * 400); o.generateR(url, Filter.MONTH.code, file, "last 30 Day"
+				 * , 800, 400); o.generateWC(url, Filter.MONTH.code, file,
+				 * "last 30 Day", 800, 400); o.generateWDWS(url,
+				 * Filter.MONTH.code, file, "last 30 Hour", 400, 400); notting =
+				 * false; }
+				 * 
+				 * if (cmd.hasOption("y")) { o.generateT(url, Filter.YEAR.code,
+				 * file, "last Year", 800, 400); o.generateP(url,
+				 * Filter.YEAR.code, file, "last Year", 800, 400);
+				 * o.generateH(url, Filter.YEAR.code, file, "last Year", 800,
+				 * 400); o.generateR(url, Filter.YEAR.code, file, "last Year",
+				 * 800, 400); o.generateWC(url, Filter.YEAR.code, file,
+				 * "last Year", 800, 400); o.generateWDWS(url,
+				 * Filter.MONTH.code, file, "last Year", 400, 400); notting =
+				 * false; }
+				 */
 
 				if (notting) {
 					System.out.println("Notting to do!!!");
@@ -261,37 +263,35 @@ public class Main {
 
 			final XYPlot plot = chart.getXYPlot();
 
+			
+			final StandardXYItemRenderer renderer0 = new StandardXYItemRenderer();
+			renderer0.setSeriesPaint(0, Color.yellow);
+			plot.setRenderer(0, renderer0);
+			
 			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
-			/*final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
+			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
 			dataset2.addSeries(getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MinHour"));
 
 			plot.setDataset(1, dataset2);
-*/
-			/*
-			 * final NumberAxis axis2 = new NumberAxis();
-			 * axis2.setAutoRangeIncludesZero(false); plot.setRangeAxis(1,
-			 * axis2); plot.setDataset(1, dataset2);
-			 * plot.mapDatasetToRangeAxis(1, 1); final XYItemRenderer renderer =
-			 * plot.getRenderer(); if (renderer instanceof
-			 * StandardXYItemRenderer) { final StandardXYItemRenderer rr =
-			 * (StandardXYItemRenderer) renderer; rr.setShapesFilled(true); }
-			 * 
-			 */
 
 			final StandardXYItemRenderer renderer1 = new StandardXYItemRenderer();
 			renderer1.setSeriesPaint(0, Color.blue);
 			plot.setRenderer(1, renderer1);
 
-		/*	final StandardXYItemRenderer renderer2 = new StandardXYItemRenderer();
+			final TimeSeriesCollection dataset3 = new TimeSeriesCollection();
+			dataset3.addSeries(getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MaxHour"));
+
+			plot.setDataset(2, dataset3);
+
+			final StandardXYItemRenderer renderer2 = new StandardXYItemRenderer();
 			renderer2.setSeriesPaint(0, Color.red);
 			plot.setRenderer(2, renderer2);
-*/
+
+			
 			chart.addSubtitle(getLeggendDate());
 
 			File lineChart = new File(folder + "/t" + type + ".jpg");
-
-			// plot.setDataset(1, dataset2);
 
 			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
 			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
@@ -549,6 +549,8 @@ public class Main {
 			String tmpDate = o.get("ts").toString().replace("\"", "");
 
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd:HH");
+			format.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+
 			Date date;
 			try {
 				date = format.parse(tmpDate);
@@ -560,10 +562,10 @@ public class Main {
 		}
 
 		for (Map.Entry<Date, Long> entry : m.entrySet()) {
-			System.out.println("key:" + entry.getKey() + " -->" + entry.getValue());
 			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
-
+			System.out.println("getTimeSeriesMaxMin --> key:" + entry.getKey() + " -->" + entry.getValue());
 		}
+		
 		System.out.println("tot ele :" + serie1.getItems().size());
 		return serie1;
 
@@ -599,8 +601,9 @@ public class Main {
 
 		for (Map.Entry<Date, Float> entry : m.entrySet()) {
 			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
+			System.out.println("getTimeSeries --> key:" + entry.getKey() + " -->" + entry.getValue());
 		}
-		
+
 		return serie1;
 	}
 
