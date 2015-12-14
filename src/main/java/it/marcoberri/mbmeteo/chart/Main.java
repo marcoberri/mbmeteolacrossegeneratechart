@@ -34,8 +34,10 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.FixedMillisecond;
+import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.ui.RectangleEdge;
 
 import com.google.gson.Gson;
@@ -105,47 +107,61 @@ public class Main {
 
 				if (cmd.hasOption("d")) {
 					o.generateT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-				/*	o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-*/
+
+					o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+//					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+//					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+//					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+//					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+//					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+
 					notting = false;
 				}
 
-				/*
-				 * if (cmd.hasOption("w")) { o.generateT(url, Filter.WEEK.code,
-				 * file, "last 7 Day", 800, 400); o.generateP(url,
-				 * Filter.WEEK.code, file, "last 7 Day", 800, 400);
-				 * o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 800,
-				 * 400); o.generateR(url, Filter.WEEK.code, file, "last 7 Day",
-				 * 800, 400); o.generateWC(url, Filter.WEEK.code, file,
-				 * "last 7 Day", 800, 400); o.generateWDWS(url,
-				 * Filter.WEEK.code, file, "last 7 Hour", 400, 400); notting =
-				 * false; }
-				 * 
-				 * if (cmd.hasOption("m")) { o.generateT(url, Filter.MONTH.code,
-				 * file, "last 30 Day", 800, 400); o.generateP(url,
-				 * Filter.MONTH.code, file, "last 30 Day", 800, 400);
-				 * o.generateH(url, Filter.MONTH.code, file, "last 30 Day", 800,
-				 * 400); o.generateR(url, Filter.MONTH.code, file, "last 30 Day"
-				 * , 800, 400); o.generateWC(url, Filter.MONTH.code, file,
-				 * "last 30 Day", 800, 400); o.generateWDWS(url,
-				 * Filter.MONTH.code, file, "last 30 Hour", 400, 400); notting =
-				 * false; }
-				 * 
-				 * if (cmd.hasOption("y")) { o.generateT(url, Filter.YEAR.code,
-				 * file, "last Year", 800, 400); o.generateP(url,
-				 * Filter.YEAR.code, file, "last Year", 800, 400);
-				 * o.generateH(url, Filter.YEAR.code, file, "last Year", 800,
-				 * 400); o.generateR(url, Filter.YEAR.code, file, "last Year",
-				 * 800, 400); o.generateWC(url, Filter.YEAR.code, file,
-				 * "last Year", 800, 400); o.generateWDWS(url,
-				 * Filter.MONTH.code, file, "last Year", 400, 400); notting =
-				 * false; }
-				 */
+				if (cmd.hasOption("w")) {
+//					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					// o.generateP(url,Filter.WEEK.code, file, "last 7 Day",
+					// 800, 400);
+					// o.generateH(url, Filter.WEEK.code, file, "last 7 Day",
+					// 800, 400);
+					// o.generateR(url, Filter.WEEK.code, file, "last 7 Day",
+					// 800, 400);
+					// o.generateWC(url, Filter.WEEK.code, file, "last 7 Day",
+					// 800, 400);
+					// o.generateWDWS(url, Filter.WEEK.code, file, "last 7
+					// Hour", 400, 400);
+					notting = false;
+				}
+
+				if (cmd.hasOption("m")) {
+//					o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
+					// o.generateP(url, Filter.MONTH.code, file, "last 30 Day",
+					// 800, 400);
+					// o.generateH(url, Filter.MONTH.code, file, "last 30 Day",
+					// 800, 400);
+					// o.generateR(url, Filter.MONTH.code, file, "last 30 Day",
+					// 800, 400);
+					// o.generateWC(url, Filter.MONTH.code, file, "last 30 Day",
+					// 800, 400);
+					// o.generateWDWS(url, Filter.MONTH.code, file, "last 30
+					// Hour", 400, 400);
+					notting = false;
+				}
+
+				if (cmd.hasOption("y")) {
+//					o.generateT(url, Filter.YEAR.code, file, "last Year", 800, 400);
+					// o.generateP(url, Filter.YEAR.code, file, "last Year",
+					// 800, 400);
+					// o.generateH(url, Filter.YEAR.code, file, "last Year",
+					// 800, 400);
+					// o.generateR(url, Filter.YEAR.code, file, "last Year",
+					// 800, 400);
+					// o.generateWC(url, Filter.YEAR.code, file, "last Year",
+					// 800, 400);
+					// o.generateWDWS(url, Filter.MONTH.code, file, "last Year",
+					// 400, 400);
+					notting = false;
+				}
 
 				if (notting) {
 					System.out.println("Notting to do!!!");
@@ -256,22 +272,26 @@ public class Main {
 		try {
 
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("°C", url, "T/", type, "T1"));
+			TimeSeries act = getTimeSeries("°C", url, "T/", type, "T1");
+			dataset1.addSeries(act);
+
+			final TimeSeriesDataItem dataFirst = act.getDataItem(0);
+			final RegularTimePeriod starttime = dataFirst.getPeriod();
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Temperature °C " + titleChart, "Date", "°C",
 					dataset1, true, true, false);
 
 			final XYPlot plot = chart.getXYPlot();
 
-			
 			final StandardXYItemRenderer renderer0 = new StandardXYItemRenderer();
 			renderer0.setSeriesPaint(0, Color.yellow);
 			plot.setRenderer(0, renderer0);
-			
+
 			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
 			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
-			dataset2.addSeries(getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MinHour"));
+			dataset2.addSeries(
+					getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MinHour", starttime.getFirstMillisecond()));
 
 			plot.setDataset(1, dataset2);
 
@@ -280,7 +300,8 @@ public class Main {
 			plot.setRenderer(1, renderer1);
 
 			final TimeSeriesCollection dataset3 = new TimeSeriesCollection();
-			dataset3.addSeries(getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MaxHour"));
+			dataset3.addSeries(
+					getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MaxHour", starttime.getFirstMillisecond()));
 
 			plot.setDataset(2, dataset3);
 
@@ -288,7 +309,6 @@ public class Main {
 			renderer2.setSeriesPaint(0, Color.red);
 			plot.setRenderer(2, renderer2);
 
-			
 			chart.addSubtitle(getLeggendDate());
 
 			File lineChart = new File(folder + "/t" + type + ".jpg");
@@ -348,7 +368,58 @@ public class Main {
 
 		try {
 
+			
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
+			TimeSeries act = getTimeSeries("%", url, "H/", type, "H1");
+			dataset1.addSeries(act);
+
+			final TimeSeriesDataItem dataFirst = act.getDataItem(0);
+			final RegularTimePeriod starttime = dataFirst.getPeriod();
+
+			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Humidity % " + titleChart, "Date", "%",
+					dataset1, true, true, false);
+
+			final XYPlot plot = chart.getXYPlot();
+
+			final StandardXYItemRenderer renderer0 = new StandardXYItemRenderer();
+			renderer0.setSeriesPaint(0, Color.yellow);
+			plot.setRenderer(0, renderer0);
+
+			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
+
+			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
+			dataset2.addSeries(
+					getTimeSeriesMaxMin("%", url, "H/MaxMin/", type, "H1MinHour", starttime.getFirstMillisecond()));
+
+			plot.setDataset(1, dataset2);
+
+			final StandardXYItemRenderer renderer1 = new StandardXYItemRenderer();
+			renderer1.setSeriesPaint(0, Color.blue);
+			plot.setRenderer(1, renderer1);
+
+			final TimeSeriesCollection dataset3 = new TimeSeriesCollection();
+			dataset3.addSeries(
+					getTimeSeriesMaxMin("%", url, "H/MaxMin/", type, "H1MaxHour", starttime.getFirstMillisecond()));
+
+			plot.setDataset(2, dataset3);
+
+			final StandardXYItemRenderer renderer2 = new StandardXYItemRenderer();
+			renderer2.setSeriesPaint(0, Color.red);
+			plot.setRenderer(2, renderer2);
+
+			chart.addSubtitle(getLeggendDate());
+
+			File lineChart = new File(folder + "/h" + type + ".jpg");
+
+			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
+			plot.setBackgroundPaint(color);
+			chart.removeLegend();
+
+			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
+			
+			
+		/*	final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			dataset1.addSeries(getTimeSeries("%", url, "H/", type, "H1"));
 
 			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Humidity % " + titleChart, "Date", "%",
@@ -366,7 +437,7 @@ public class Main {
 
 			chart.removeLegend();
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
-
+*/
 		} catch (final ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -527,8 +598,8 @@ public class Main {
 		return getTimeSeries(tseries, url, baseUrl, type, field, -1000);
 	}
 
-	public TimeSeries getTimeSeriesMaxMin(String tseries, String url, String baseUrl, String type, String field)
-			throws ClientProtocolException, IOException {
+	public TimeSeries getTimeSeriesMaxMin(String tseries, String url, String baseUrl, String type, String field,
+			long startMillis) throws ClientProtocolException, IOException {
 
 		final TimeSeries serie1 = new TimeSeries(tseries);
 		System.out.println("call " + url + baseUrl + type);
@@ -558,14 +629,15 @@ public class Main {
 				System.out.println("error parsing:" + tmpDate + "-->" + e1.toString());
 				continue;
 			}
-			m.put(date, o.get(field).getAsLong());
+			if (date.getTime() >= startMillis)
+				m.put(date, o.get(field).getAsLong());
 		}
 
 		for (Map.Entry<Date, Long> entry : m.entrySet()) {
 			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
-			System.out.println("getTimeSeriesMaxMin --> key:" + entry.getKey() + " -->" + entry.getValue());
+			System.out.println("getTimeSeriesMaxMin ("+field+ ")--> key:" + entry.getKey() + " -->" + entry.getValue());
 		}
-		
+
 		System.out.println("tot ele :" + serie1.getItems().size());
 		return serie1;
 
