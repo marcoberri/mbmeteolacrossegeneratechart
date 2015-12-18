@@ -7,8 +7,10 @@ import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +47,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+
 /**
  * 
  * Sample -url http://meteo.marcoberri.it/ -f /tmp/
@@ -55,9 +67,11 @@ import com.google.gson.JsonObject;
 public class Main {
 
 	public enum Filter {
-		WEEK("7"), DAY("24"), YEAR("365"), MONTH("30"), MaxMinDAY("MaxMin/24");
+		WEEK("7"), DAY("24"), YEAR("365"), MONTH("30");
 
+		
 		private final String code;
+		
 
 		Filter(String code) {
 			this.code = code;
@@ -106,24 +120,30 @@ public class Main {
 				boolean notting = true;
 
 				if (cmd.hasOption("d")) {
-					o.generateT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-
-					o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-//					o.generateHT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-//					o.generateP(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-//					o.generateR(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-//					o.generateWC(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
-//					o.generateWDWS(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+				//	o.dayReport();
+				//	o.generateT(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					//o.generateH(url, Filter.DAY.code, file, "last 24 Hour", 600, 460);
+					// o.generateHT(url, Filter.DAY.code, file, "last 24 Hour",
+					// 600, 460);
+					// o.generateP(url, Filter.DAY.code, file, "last 24 Hour",
+					// 600, 460);
+					// o.generateR(url, Filter.DAY.code, file, "last 24 Hour",
+					// 600, 460);
+					// o.generateWC(url, Filter.DAY.code, file, "last 24 Hour",
+					// 600, 460);
+					// o.generateWDWS(url, Filter.DAY.code, file, "last 24
+					// Hour", 600, 460);
 
 					notting = false;
 				}
 
 				if (cmd.hasOption("w")) {
-//					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					o.generateT(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+					//o.generateH(url, Filter.WEEK.code, file, "last 7 Day", 800, 400);
+
 					// o.generateP(url,Filter.WEEK.code, file, "last 7 Day",
 					// 800, 400);
-					// o.generateH(url, Filter.WEEK.code, file, "last 7 Day",
-					// 800, 400);
+
 					// o.generateR(url, Filter.WEEK.code, file, "last 7 Day",
 					// 800, 400);
 					// o.generateWC(url, Filter.WEEK.code, file, "last 7 Day",
@@ -134,7 +154,7 @@ public class Main {
 				}
 
 				if (cmd.hasOption("m")) {
-//					o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
+					// o.generateT(url, Filter.MONTH.code, file, "last 30 Day", 800, 400);
 					// o.generateP(url, Filter.MONTH.code, file, "last 30 Day",
 					// 800, 400);
 					// o.generateH(url, Filter.MONTH.code, file, "last 30 Day",
@@ -149,7 +169,8 @@ public class Main {
 				}
 
 				if (cmd.hasOption("y")) {
-//					o.generateT(url, Filter.YEAR.code, file, "last Year", 800, 400);
+					// o.generateT(url, Filter.YEAR.code, file, "last Year",
+					// 800, 400);
 					// o.generateP(url, Filter.YEAR.code, file, "last Year",
 					// 800, 400);
 					// o.generateH(url, Filter.YEAR.code, file, "last Year",
@@ -177,6 +198,56 @@ public class Main {
 		} catch (final ParseException e) {
 			e.printStackTrace();
 			System.exit(1);
+		}
+
+	}
+
+	private void dayReport() {
+		try {
+
+			String s = HttpHelper.getData("http://meteo.marcoberri.it/T/24");
+
+			System.out.println(s);
+			
+			
+			Gson gson = new Gson();
+			final JsonArray jsonArray = gson.fromJson(s, JsonArray.class);
+
+			ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+			for (JsonElement e : jsonArray) {
+
+				JsonObject o = e.getAsJsonObject();
+				if (o.get("T1") == null || o.get("T1").isJsonNull()) {
+					continue;
+				}
+
+				long limit = 1431730684000l;
+
+				if (o.get("ts").getAsLong() < limit)
+					continue;
+				final HashMap<String, Object> m = new HashMap<String, Object>();
+				m.put("ts", new Date(o.get("ts").getAsLong()));
+				m.put("T1", o.get("T1").getAsFloat());
+				data.add(m);
+			}
+
+			InputStream inputStream = ConfigurationHelper.class.getResourceAsStream("/dayReport.jrxml");
+			JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(data);
+
+			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap(), beanColDataSource);
+			JasperExportManager.exportReportToPdfFile(jasperPrint, "/tmp/test_jasper.pdf");
+
+		} catch (ClientProtocolException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (JRException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 
 	}
@@ -289,9 +360,18 @@ public class Main {
 
 			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
 
+			
+			String partialField = "Hour";
+			
+			if(type.equals(Filter.DAY.code))
+				partialField = "Hour";
+			
+			else if(type.equals(Filter.WEEK.code) || type.equals(Filter.MONTH.code))
+				partialField = "Day";
+			
 			final TimeSeriesCollection dataset2 = new TimeSeriesCollection();
 			dataset2.addSeries(
-					getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MinHour", starttime.getFirstMillisecond()));
+					getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1Min" + partialField, starttime.getFirstMillisecond()));
 
 			plot.setDataset(1, dataset2);
 
@@ -301,7 +381,7 @@ public class Main {
 
 			final TimeSeriesCollection dataset3 = new TimeSeriesCollection();
 			dataset3.addSeries(
-					getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1MaxHour", starttime.getFirstMillisecond()));
+					getTimeSeriesMaxMin("°C", url, "T/MaxMin/", type, "T1Max" + partialField, starttime.getFirstMillisecond()));
 
 			plot.setDataset(2, dataset3);
 
@@ -368,7 +448,6 @@ public class Main {
 
 		try {
 
-			
 			final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
 			TimeSeries act = getTimeSeries("%", url, "H/", type, "H1");
 			dataset1.addSeries(act);
@@ -417,27 +496,27 @@ public class Main {
 			chart.removeLegend();
 
 			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
-			
-			
-		/*	final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
-			dataset1.addSeries(getTimeSeries("%", url, "H/", type, "H1"));
 
-			final JFreeChart chart = ChartFactory.createTimeSeriesChart("Humidity % " + titleChart, "Date", "%",
-					dataset1, true, true, false);
-			final XYPlot plot = chart.getXYPlot();
-			final DateAxis axis = setAxis((DateAxis) plot.getDomainAxis(), type);
-
-			chart.addSubtitle(getLeggendDate());
-
-			File lineChart = new File(folder + "/h" + type + ".jpg");
-
-			plot.getRangeAxis().setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
-			axis.setTickLabelFont(new Font(fontType, Font.PLAIN, fontSize));
-			plot.setBackgroundPaint(color);
-
-			chart.removeLegend();
-			ChartUtilities.saveChartAsJPEG(lineChart, chart, width, height);
-*/
+			/*
+			 * final TimeSeriesCollection dataset1 = new TimeSeriesCollection();
+			 * dataset1.addSeries(getTimeSeries("%", url, "H/", type, "H1"));
+			 * 
+			 * final JFreeChart chart = ChartFactory.createTimeSeriesChart(
+			 * "Humidity % " + titleChart, "Date", "%", dataset1, true, true,
+			 * false); final XYPlot plot = chart.getXYPlot(); final DateAxis
+			 * axis = setAxis((DateAxis) plot.getDomainAxis(), type);
+			 * 
+			 * chart.addSubtitle(getLeggendDate());
+			 * 
+			 * File lineChart = new File(folder + "/h" + type + ".jpg");
+			 * 
+			 * plot.getRangeAxis().setTickLabelFont(new Font(fontType,
+			 * Font.PLAIN, fontSize)); axis.setTickLabelFont(new Font(fontType,
+			 * Font.PLAIN, fontSize)); plot.setBackgroundPaint(color);
+			 * 
+			 * chart.removeLegend(); ChartUtilities.saveChartAsJPEG(lineChart,
+			 * chart, width, height);
+			 */
 		} catch (final ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -620,6 +699,10 @@ public class Main {
 			String tmpDate = o.get("ts").toString().replace("\"", "");
 
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd:HH");
+			
+			if(field.indexOf("Day") != -1)
+			format = new SimpleDateFormat("yyyy-MM-dd");
+			
 			format.setTimeZone(TimeZone.getTimeZone("GMT+1"));
 
 			Date date;
@@ -635,7 +718,8 @@ public class Main {
 
 		for (Map.Entry<Date, Long> entry : m.entrySet()) {
 			serie1.add(new FixedMillisecond(entry.getKey()), entry.getValue());
-			System.out.println("getTimeSeriesMaxMin ("+field+ ")--> key:" + entry.getKey() + " -->" + entry.getValue());
+			System.out.println(
+					"getTimeSeriesMaxMin (" + field + ")--> key:" + entry.getKey() + " -->" + entry.getValue());
 		}
 
 		System.out.println("tot ele :" + serie1.getItems().size());

@@ -34,6 +34,7 @@
 				<filtering>true</filtering>
 				<includes>
 					<include>**/*.properties</include>
+					<include>**/*.jrxml</include>
 				</includes>
 			</resource>
 		</resources>
@@ -61,14 +62,14 @@
 
 
 	<dependencies>
-	
-	<dependency>
-	<groupId>net.sf.jasperreports</groupId>
-	<artifactId>jasperreports</artifactId>
-	<version>${jasperreports-version}</version>
-</dependency>
-	
-	
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>${jasperreports-version}</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
